@@ -219,6 +219,9 @@ export default function SettingsModal({
               </button>
             </div>
           </div>
+          <div className="flex items-center justify-center text-xs font-bold">
+            <a href='https://arca.live/b/trickcal/189521097'><span>버그 제보 및 문의</span></a>
+          </div>
 
         </div>
 
