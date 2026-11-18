@@ -20,6 +20,7 @@ import { evaluateWordJamo, isWinningGuess } from "./utils/wordleLogic";
 import { loadStats, saveGameResult } from "./utils/stats";
 import { sounds } from "./utils/sound";
 import SHORTCUT from './data/shortcut.json'
+import { Analytics } from "@vercel/analytics/react";
 
 function getStableDayNumber() {
   const EPOCH = new Date("2022-01-01T00:00:00+09:00").getTime();
@@ -430,6 +431,7 @@ export default function App() {
         setMaxLen={setMaxLen}
         onResetGameWithNewSettings={handleResetGameWithNewSettings}
       />
+      <Analytics />
     </div>
   );
 }
