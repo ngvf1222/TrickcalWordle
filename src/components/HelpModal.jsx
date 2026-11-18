@@ -24,6 +24,8 @@ export default function HelpModal({ isOpen, onClose }) {
         <div className="space-y-3.5 text-xs text-slate-300">
           <p className="leading-relaxed">
             숨겨진 <strong>트릭컬 캐릭터(137명)</strong>를 <strong>6번의 기회</strong> 안에 맞추는 게임입니다.
+            <br>
+            (단, 괄호와 띄어쓰기까지 정확해야합니다.)
           </p>
 
           {/* Key Feature: Jamo Decomposition */}
