@@ -19,5 +19,5 @@ export function generateShareText(evaluationsHistory, targetWord, gameInfo) {
   const attempts = won ? `${evaluationsHistory.length}/6` : 'X/6';
   const label = gameInfo?.isDaily ? `트릭컬 워들 #${gameInfo.gameNumber}` : '트릭컬 워들 연습';
 
-  return `${label} ${attempts}\n\n${emojis}\n\n자모 분해 트릭컬 워들 플레이하기`;
+  return `${label} ${attempts}\n\n${emojis}\n\n트릭컬 워들 플레이하기: http://trickcalwordle.vercel.app/`;
 }
