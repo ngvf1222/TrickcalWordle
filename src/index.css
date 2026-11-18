@@ -1,0 +1,43 @@
+@import "tailwindcss";
+
+@keyframes tilePop {
+  0% { transform: scale(0.9); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+@keyframes tileFlip {
+  0% { transform: rotateX(0); }
+  50% { transform: rotateX(90deg); }
+  100% { transform: rotateX(0); }
+}
+
+@keyframes shakeRow {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-6px); }
+  40%, 80% { transform: translateX(6px); }
+}
+
+@keyframes bounceWin {
+  0%, 20% { transform: translateY(0); }
+  40% { transform: translateY(-20px); }
+  50% { transform: translateY(0); }
+  60% { transform: translateY(-10px); }
+  80% { transform: translateY(0); }
+}
+
+.animate-tile-pop {
+  animation: tilePop 0.12s ease-in-out forwards;
+}
+
+.animate-tile-flip {
+  animation: tileFlip 0.5s ease-in-out forwards;
+}
+
+.animate-shake {
+  animation: shakeRow 0.5s ease-in-out;
+}
+
+.animate-bounce-win {
+  animation: bounceWin 0.8s ease-in-out;
+}
