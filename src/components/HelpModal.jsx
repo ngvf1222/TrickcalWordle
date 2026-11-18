@@ -88,6 +88,9 @@ export default function HelpModal({ isOpen, onClose }) {
           <div className="pt-2 border-t border-slate-700 text-[11px] text-slate-400">
             💡 <strong>글자수 팁</strong>: 뒤쪽의 <code className="text-emerald-400">␣ (빈칸)</code>이 초록색으로 맞으면 캐릭터의 총 글자수를 바로 알 수 있습니다.
           </div>
+        <div className="pt-2 border-t border-slate-700 text-[11px] text-slate-400">
+            스포: 어떤 단어들은 정식 명칭 대신 사용 가능할 수도?
+          </div>
         </div>
 
         <button

@@ -1,39 +1,42 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import confetti from 'canvas-confetti';
-import Header from './components/Header';
-import WordleBoard from './components/WordleBoard';
-import CharacterInput from './components/CharacterInput';
-import CharacterListModal from './components/CharacterListModal';
-import HelpModal from './components/HelpModal';
-import StatsModal from './components/StatsModal';
-import SettingsModal from './components/SettingsModal';
-import { 
-  getDailyInfoFromServer, 
+import React, { useState, useEffect, useCallback, useMemo } from "react";
+import confetti from "canvas-confetti";
+import Header from "./components/Header";
+import WordleBoard from "./components/WordleBoard";
+import CharacterInput from "./components/CharacterInput";
+import CharacterListModal from "./components/CharacterListModal";
+import HelpModal from "./components/HelpModal";
+import StatsModal from "./components/StatsModal";
+import SettingsModal from "./components/SettingsModal";
+import {
+  getDailyInfoFromServer,
   submitDailyGuessToServer,
   revealDailyAnswerFromServer,
-  getRandomWord, 
+  getRandomWord,
   isValidCharacter,
   padWord,
-  CHARACTERS
-} from './utils/dictionary';
-import { evaluateWordJamo, isWinningGuess } from './utils/wordleLogic';
-import { loadStats, saveGameResult } from './utils/stats';
-import { sounds } from './utils/sound';
+  CHARACTERS,
+} from "./utils/dictionary";
+import { evaluateWordJamo, isWinningGuess } from "./utils/wordleLogic";
+import { loadStats, saveGameResult } from "./utils/stats";
+import { sounds } from "./utils/sound";
+import SHORTCUT from './data/shortcut.json'
 
 function getStableDayNumber() {
-  const EPOCH = new Date('2022-01-01T00:00:00+09:00').getTime();
+  const EPOCH = new Date("2022-01-01T00:00:00+09:00").getTime();
   const now = new Date();
-  const formatter = new Intl.DateTimeFormat('ko-KR', {
-    timeZone: 'Asia/Seoul',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit'
+  const formatter = new Intl.DateTimeFormat("ko-KR", {
+    timeZone: "Asia/Seoul",
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
   });
   const parts = formatter.formatToParts(now).reduce((acc, part) => {
     acc[part.type] = part.value;
     return acc;
   }, {});
-  const midnight = new Date(`${parts.year}-${parts.month}-${parts.day}T00:00:00+09:00`).getTime();
+  const midnight = new Date(
+    `${parts.year}-${parts.month}-${parts.day}T00:00:00+09:00`,
+  ).getTime();
   return Math.floor((midnight - EPOCH) / (1000 * 60 * 60 * 24));
 }
 
@@ -47,24 +50,24 @@ export default function App() {
 
   // Settings State: Difficulty, Theme, Max Length
   const [difficulty, setDifficulty] = useState(() => {
-    return localStorage.getItem('wordle_difficulty') || 'normal';
+    return localStorage.getItem("wordle_difficulty") || "normal";
   });
 
   const [theme, setTheme] = useState(() => {
-    return localStorage.getItem('wordle_theme') || 'dark';
+    return localStorage.getItem("wordle_theme") || "dark";
   });
 
   // Default Max Length: Mobile = 6 (92% pool, readable), Desktop = 9 (Full 100%)
   const [maxLen, setMaxLen] = useState(() => {
-    const saved = localStorage.getItem('wordle_maxlen');
+    const saved = localStorage.getItem("wordle_maxlen");
     if (saved) return Number(saved);
-    if (typeof window !== 'undefined' && window.innerWidth < 640) {
+    if (typeof window !== "undefined" && window.innerWidth < 640) {
       return 6;
     }
     return 9;
   });
 
-  const maxAttempts = difficulty === 'hard' ? 5 : 6;
+  const maxAttempts = difficulty === "hard" ? 5 : 6;
 
   // Stable Daily Game Number (Never null!)
   const [dailyNumber, setDailyNumber] = useState(() => getStableDayNumber());
@@ -75,7 +78,7 @@ export default function App() {
   const [practiceWord, setPracticeWord] = useState(null);
   const [fallbackDailyWord, setFallbackDailyWord] = useState(null);
 
-  const [currentGuess, setCurrentGuess] = useState('');
+  const [currentGuess, setCurrentGuess] = useState("");
   const [guesses, setGuesses] = useState([]);
   const [evaluations, setEvaluations] = useState([]);
   const [isShaking, setIsShaking] = useState(false);
@@ -88,13 +91,13 @@ export default function App() {
   const showToast = useCallback((message, duration = 2400) => {
     setToastMessage(message);
     setTimeout(() => {
-      setToastMessage(cur => (cur === message ? null : cur));
+      setToastMessage((cur) => (cur === message ? null : cur));
     }, duration);
   }, []);
 
   // Determine active board maxLen:
   // If Daily Mode and targetLength > 6, FORCE 9 columns on mobile and desktop!
-  const isDailyLongWord = isDaily && (dailyTargetLength > 6);
+  const isDailyLongWord = isDaily && dailyTargetLength > 6;
   const activeMaxLen = isDailyLongWord ? 9 : maxLen;
 
   // Sync Daily Metadata from server
@@ -107,7 +110,10 @@ export default function App() {
         setDailyTargetLength(info.targetLength);
         // If daily answer is longer than 6 letters and user has a shorter board setting, notify!
         if (info.targetLength > 6 && maxLen < 9) {
-          showToast(`📢 오늘의 사도는 6글자를 초과(${info.targetLength}자)하여 9칸 보드가 자동 적용되었습니다!`, 3600);
+          showToast(
+            `📢 오늘의 사도는 6글자를 초과(${info.targetLength}자)하여 9칸 보드가 자동 적용되었습니다!`,
+            3600,
+          );
         }
       }
       if (info.fallbackWord) {
@@ -132,7 +138,7 @@ export default function App() {
     const random = getRandomWord(maxLen);
     setIsDaily(false);
     setPracticeWord(random.word);
-    setCurrentGuess('');
+    setCurrentGuess("");
     setGuesses([]);
     setEvaluations([]);
     setIsShaking(false);
@@ -140,13 +146,13 @@ export default function App() {
     setIsGameOver(false);
     setIsWon(false);
     setRevealedWord(null);
-    showToast('새로운 사도로 연습 게임 시작!');
+    showToast("새로운 사도로 연습 게임 시작!");
   }, [maxLen, showToast]);
 
   // Switch to Daily game
   const handleDailyGame = useCallback(() => {
     setIsDaily(true);
-    setCurrentGuess('');
+    setCurrentGuess("");
     setGuesses([]);
     setEvaluations([]);
     setIsShaking(false);
@@ -159,8 +165,11 @@ export default function App() {
   }, [dailyNumber, syncDailyInfo, showToast]);
 
   // Reset when settings change
-  const handleResetGameWithNewSettings = ({ difficulty: newDiff, maxLen: newLen }) => {
-    setCurrentGuess('');
+  const handleResetGameWithNewSettings = ({
+    difficulty: newDiff,
+    maxLen: newLen,
+  }) => {
+    setCurrentGuess("");
     setGuesses([]);
     setEvaluations([]);
     setIsShaking(false);
@@ -175,7 +184,7 @@ export default function App() {
       const random = getRandomWord(newLen);
       setPracticeWord(random.word);
     }
-    showToast('새 설정이 적용되었습니다.');
+    showToast("새 설정이 적용되었습니다.");
   };
 
   // Submit Guess
@@ -183,12 +192,13 @@ export default function App() {
     if (isGameOver) return;
 
     const trimmed = currentGuess.trim();
-    if (!trimmed) {
-      triggerShake('사도 이름을 입력해주세요!');
+    const preprocessed=(trimmed in SHORTCUT)?SHORTCUT[trimmed]:trimmed
+    if (!preprocessed) {
+      triggerShake("사도 이름을 입력해주세요!");
       return;
     }
 
-    if (!isValidCharacter(trimmed, activeMaxLen)) {
+    if (!isValidCharacter(preprocessed, activeMaxLen)) {
       triggerShake(`목록에 없거나 ${activeMaxLen}자를 초과하는 사도입니다!`);
       return;
     }
@@ -204,33 +214,45 @@ export default function App() {
 
     if (isDaily) {
       // SECURE: Server-side evaluation
-      const res = await submitDailyGuessToServer(trimmed, activeMaxLen, guesses.length + 1 >= maxAttempts);
+      const res = await submitDailyGuessToServer(
+        preprocessed,
+        activeMaxLen,
+        guesses.length + 1 >= maxAttempts,
+      );
       if (res && res.evalResult) {
         evalResult = res.evalResult;
         isWin = res.isWin;
         answerWord = res.answer;
       } else {
         // Offline fallback
-        const target = fallbackDailyWord || '베니';
-        evalResult = evaluateWordJamo(padWord(trimmed, activeMaxLen), padWord(target, activeMaxLen), activeMaxLen);
-        isWin = trimmed === target;
+        const target = fallbackDailyWord || "베니";
+        evalResult = evaluateWordJamo(
+          padWord(preprocessed, activeMaxLen),
+          padWord(target, activeMaxLen),
+          activeMaxLen,
+        );
+        isWin = preprocessed === target;
         answerWord = isWin ? target : null;
       }
     } else {
       // Practice mode local evaluation
-      const target = practiceWord || '베니';
-      evalResult = evaluateWordJamo(padWord(trimmed, activeMaxLen), padWord(target, activeMaxLen), activeMaxLen);
-      isWin = trimmed === target;
+      const target = practiceWord || "베니";
+      evalResult = evaluateWordJamo(
+        padWord(preprocessed, activeMaxLen),
+        padWord(target, activeMaxLen),
+        activeMaxLen,
+      );
+      isWin = preprocessed === target;
       answerWord = isWin ? target : null;
     }
 
-    const paddedGuess = padWord(trimmed, activeMaxLen);
+    const paddedGuess = padWord(preprocessed, activeMaxLen);
     const newGuesses = [...guesses, paddedGuess];
     const newEvaluations = [...evaluations, evalResult];
 
     setGuesses(newGuesses);
     setEvaluations(newEvaluations);
-    setCurrentGuess('');
+    setCurrentGuess("");
 
     const exhausted = newGuesses.length >= maxAttempts;
 
@@ -238,7 +260,7 @@ export default function App() {
       setIsGameOver(true);
       setIsWon(true);
       setIsWinningRow(true);
-      setRevealedWord(answerWord || trimmed);
+      setRevealedWord(answerWord || preprocessed);
       sounds.playWin();
       confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
 
@@ -253,9 +275,9 @@ export default function App() {
 
       if (isDaily && !answerWord) {
         const revealed = await revealDailyAnswerFromServer(activeMaxLen);
-        setRevealedWord(revealed || fallbackDailyWord || '');
+        setRevealedWord(revealed || fallbackDailyWord || "");
       } else {
-        setRevealedWord(practiceWord || answerWord || '');
+        setRevealedWord(practiceWord || answerWord || "");
       }
 
       const updatedStats = saveGameResult(false, maxAttempts);
@@ -268,18 +290,20 @@ export default function App() {
   // Random character roll
   const handleRandomPick = () => {
     sounds.playKey();
-    const eligible = CHARACTERS.filter(c => c.length <= activeMaxLen);
+    const eligible = CHARACTERS.filter((c) => c.length <= activeMaxLen);
     const pool = eligible.length > 0 ? eligible : CHARACTERS;
     const randomIndex = Math.floor(Math.random() * pool.length);
     setCurrentGuess(pool[randomIndex]);
   };
 
-  const isDark = theme === 'dark';
+  const isDark = theme === "dark";
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans select-none transition-colors duration-300 ${
-      isDark ? 'bg-slate-900 text-slate-100' : 'bg-slate-50 text-slate-800'
-    }`}>
+    <div
+      className={`min-h-screen flex flex-col font-sans select-none transition-colors duration-300 ${
+        isDark ? "bg-slate-900 text-slate-100" : "bg-slate-50 text-slate-800"
+      }`}
+    >
       <Header
         muted={muted}
         setMuted={setMuted}
@@ -298,8 +322,10 @@ export default function App() {
           onClick={handleDailyGame}
           className={`px-3 py-1 rounded-full font-semibold transition flex items-center gap-1.5 cursor-pointer ${
             isDaily
-              ? 'bg-emerald-600 text-white shadow'
-              : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-200 text-slate-600 hover:text-black'
+              ? "bg-emerald-600 text-white shadow"
+              : isDark
+                ? "bg-slate-800 text-slate-400 hover:text-white"
+                : "bg-slate-200 text-slate-600 hover:text-black"
           }`}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
@@ -310,8 +336,10 @@ export default function App() {
           onClick={handleNewGame}
           className={`px-3 py-1 rounded-full font-semibold transition cursor-pointer ${
             !isDaily
-              ? 'bg-emerald-600 text-white shadow'
-              : isDark ? 'bg-slate-800 text-slate-400 hover:text-white' : 'bg-slate-200 text-slate-600 hover:text-black'
+              ? "bg-emerald-600 text-white shadow"
+              : isDark
+                ? "bg-slate-800 text-slate-400 hover:text-white"
+                : "bg-slate-200 text-slate-600 hover:text-black"
           }`}
         >
           무제한 연습
@@ -369,10 +397,7 @@ export default function App() {
       )}
 
       {/* Modals */}
-      <HelpModal
-        isOpen={isHelpOpen}
-        onClose={() => setIsHelpOpen(false)}
-      />
+      <HelpModal isOpen={isHelpOpen} onClose={() => setIsHelpOpen(false)} />
 
       <StatsModal
         isOpen={isStatsOpen}
@@ -380,7 +405,7 @@ export default function App() {
         stats={stats}
         isGameOver={isGameOver}
         isWon={isWon}
-        targetWord={revealedWord || practiceWord || fallbackDailyWord || '정답'}
+        targetWord={revealedWord || practiceWord || fallbackDailyWord || "정답"}
         evaluations={evaluations}
         gameInfo={{ isDaily, gameNumber: dailyNumber }}
         onNewGame={handleNewGame}
