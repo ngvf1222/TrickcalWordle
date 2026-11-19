@@ -86,7 +86,7 @@ export default function CharacterInput({
           onChange={(e) => onChange(e.target.value)}
           onKeyDown={handleKeyDown}
           disabled={disabled}
-          placeholder={showListButton ? "사도 이름 입력..." : "사도 이름 직접 입력 (기억력 추리)..."}
+          placeholder={showListButton ? "사도/캐릭터 이름 입력..." : "사도/캐릭터 이름 직접 입력 (기억력 추리)..."}
           className={`w-full bg-transparent px-2.5 py-1.5 text-sm sm:text-base font-bold focus:outline-none ${
             isDark ? 'text-white placeholder-slate-500' : 'text-slate-900 placeholder-slate-400'
           }`}

@@ -154,7 +154,7 @@ export default function StatsModal({
             </div>
 
             <div className="text-[11px] text-slate-400 uppercase tracking-wider mb-0.5 font-semibold">
-              정답 사도
+              정답 사도/캐릭터
             </div>
             <div className="text-2xl font-black tracking-tight text-white font-sans">
               {targetWord}
@@ -166,7 +166,7 @@ export default function StatsModal({
         {gameInfo?.isDaily && (
           <div className="bg-slate-900/50 p-2.5 rounded-xl border border-slate-700/60 flex items-center justify-center gap-2 text-xs mb-4 font-mono">
             <Clock className="w-4 h-4 text-emerald-400 animate-pulse" />
-            <span className="text-slate-400">다음 데일리 사도까지:</span>
+            <span className="text-slate-400">다음 데일리 사도/캐릭터까지:</span>
             <span className="font-extrabold text-white">{timeLeft}</span>
           </div>
         )}

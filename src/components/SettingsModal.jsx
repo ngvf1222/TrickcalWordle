@@ -184,7 +184,7 @@ export default function SettingsModal({
               ))}
             </div>
             <p className="text-[10px] opacity-60 mt-1.5">
-              💡 오늘의 사도가 6글자를 넘는 경우 모바일에서도 자동으로 9칸 보드가 적용됩니다.
+              💡 오늘의 사도/캐릭터가 6글자를 넘는 경우 모바일에서도 자동으로 9칸 보드가 적용됩니다.
             </p>
           </div>
 

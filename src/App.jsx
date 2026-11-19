@@ -112,7 +112,7 @@ export default function App() {
         // If daily answer is longer than 6 letters and user has a shorter board setting, notify!
         if (info.targetLength > 6 && maxLen < 9) {
           showToast(
-            `📢 오늘의 사도는 6글자를 초과(${info.targetLength}자)하여 9칸 보드가 자동 적용되었습니다!`,
+            `📢 오늘의 사도/캐릭터는 6글자를 초과(${info.targetLength}자)하여 9칸 보드가 자동 적용되었습니다!`,
             3600,
           );
         }
@@ -147,7 +147,7 @@ export default function App() {
     setIsGameOver(false);
     setIsWon(false);
     setRevealedWord(null);
-    showToast("새로운 사도로 연습 게임 시작!");
+    showToast("새로운 사도/캐릭터로 연습 게임 시작!");
   }, [maxLen, showToast]);
 
   // Switch to Daily game
@@ -195,12 +195,12 @@ export default function App() {
     const trimmed = currentGuess.trim();
     const preprocessed=(trimmed in SHORTCUT)?SHORTCUT[trimmed]:trimmed
     if (!preprocessed) {
-      triggerShake("사도 이름을 입력해주세요!");
+      triggerShake("사도/캐릭터 이름을 입력해주세요!");
       return;
     }
 
     if (!isValidCharacter(preprocessed, activeMaxLen)) {
-      triggerShake(`목록에 없거나 ${activeMaxLen}자를 초과하는 사도입니다!`);
+      triggerShake(`목록에 없거나 ${activeMaxLen}자를 초과하는 사도/캐릭터입니다!`);
       return;
     }
 
@@ -330,7 +330,7 @@ export default function App() {
           }`}
         >
           <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-          <span>오늘의 사도 #{dailyNumber}</span>
+          <span>오늘의 사도/캐릭터 #{dailyNumber}</span>
         </button>
 
         <button
@@ -351,7 +351,7 @@ export default function App() {
       {isDailyLongWord && (
         <div className="max-w-md mx-auto px-2 pt-1 text-center">
           <span className="text-[11px] px-2.5 py-0.5 rounded-full bg-amber-500/20 text-amber-400 border border-amber-500/30 font-semibold">
-            📢 오늘의 사도는 6글자를 초과하여 9칸 보드가 자동 적용되었습니다!
+            📢 오늘의 사도/캐릭터는 6글자를 초과하여 9칸 보드가 자동 적용되었습니다!
           </span>
         </div>
       )}

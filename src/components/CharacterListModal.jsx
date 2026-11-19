@@ -31,13 +31,13 @@ export default function CharacterListModal({ isOpen, onClose, onSelect, maxLen =
         <div className="p-4 border-b border-slate-700 flex items-center justify-between">
           <div>
             <h2 className="text-base font-extrabold text-white flex items-center gap-2">
-              <span>트릭컬 사도 도감</span>
+              <span>트릭컬 사도/캐릭터 도감</span>
               <span className="px-2 py-0.5 rounded-full bg-emerald-500/20 text-emerald-400 text-xs font-mono font-bold">
                 총 {CHARACTERS.length}명
               </span>
             </h2>
             <p className="text-[11px] text-slate-400 mt-0.5">
-              사도를 클릭하면 입력창에 바로 적용됩니다
+              사도/캐릭터를 클릭하면 입력창에 바로 적용됩니다
             </p>
           </div>
 
@@ -57,7 +57,7 @@ export default function CharacterListModal({ isOpen, onClose, onSelect, maxLen =
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="사도 이름 검색..."
+              placeholder="사도/캐릭터 이름 검색..."
               className="w-full bg-transparent text-xs sm:text-sm text-white placeholder-slate-500 focus:outline-none"
             />
             {query && (
@@ -135,7 +135,7 @@ export default function CharacterListModal({ isOpen, onClose, onSelect, maxLen =
 
         {/* Footer */}
         <div className="p-3 border-t border-slate-700/80 bg-slate-900/50 flex justify-between items-center text-xs text-slate-400">
-          <span>선택 가능한 사도: {filtered.length}명</span>
+          <span>선택 가능한 사도/캐릭터: {filtered.length}명</span>
           <button
             onClick={onClose}
             className="px-3.5 py-1.5 rounded-lg bg-slate-700 hover:bg-slate-600 text-white font-semibold transition"
