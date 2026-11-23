@@ -59,15 +59,29 @@ export default function App() {
   });
 
   // Default Max Length: Mobile = 6 (92% pool, readable), Desktop = 9 (Full 100%)
-  const [maxLen, setMaxLen] = useState(() => {
-    const saved = localStorage.getItem("wordle_maxlen");
-    if (saved) return Number(saved);
-    if (typeof window !== "undefined" && window.innerWidth < 640) {
-      return 6;
-    }
-    return 9;
-  });
-
+  const [maxLen, setMaxLen] = useState(9);
+  useEffect(() => {
+    const handleResize = () => {
+      const saved = localStorage.getItem("wordle_maxlen");
+      console.log(window.innerWidth, saved);
+      if (saved){
+        setMaxLen(Number(saved));
+        return;
+      }
+      if (typeof window !== "undefined" && window.innerWidth < 640) {
+        setMaxLen(6);
+        return;
+      } else {
+        setMaxLen(9);
+        return;
+      }
+      setMaxLen(9);
+      return;
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   const maxAttempts = difficulty === "hard" ? 5 : 6;
 
   // Stable Daily Game Number (Never null!)
